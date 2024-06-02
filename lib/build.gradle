@@ -6,10 +6,11 @@
  * User Manual available at https://docs.gradle.org/8.1.1/userguide/building_java_projects.html
  */
 
-plugins {
-    // Apply the java-library plugin for API and implementation separation.
-    id 'java-library'
-}
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'java-library'
+
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -19,9 +20,6 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
-
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:31.1-jre'
@@ -37,4 +35,16 @@ java {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+application {
+	// Define the main class for the application.
+	mainClass = 'com.commonwealthrobotics.HatRackMain'
+}
+
+jar {
+	manifest {
+		attributes 'Implementation-Title': 'BowlerStudioUpdater',
+				   'Implementation-Version': '0.0.1',
+				   'Main-Class': 'com.commonwealthrobotics.HatRackMain'
+	}
 }
