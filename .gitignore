@@ -9,4 +9,4 @@ build
 **.class**
 /BowlerStudioUpdater/
 /BowlerStudioUpdater.AppDir/
-/appimagetool-x86_64.AppImage*
+**.AppImage**
