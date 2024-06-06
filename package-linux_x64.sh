@@ -3,8 +3,8 @@
 VERSION=0.0.1
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-NAME=BowlerStudioUpdater
-ICON=BowlerStudioIcon.png
+NAME=BowlerLauncher
+ICON=$NAME.png
 rm -rf $SCRIPT_DIR/$NAME
 rm -rf $SCRIPT_DIR/$NAME.AppDir
 
