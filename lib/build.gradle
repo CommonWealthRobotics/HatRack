@@ -5,11 +5,19 @@
  * For more details take a look at the 'Building Java & JVM projects' chapter in the Gradle
  * User Manual available at https://docs.gradle.org/8.1.1/userguide/building_java_projects.html
  */
+buildscript {
+	repositories {
+		gradlePluginPortal()
+	}
+	dependencies {
+		classpath 'com.github.johnrengelman:shadow:8.1.1'
+	}
+}
 
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
-apply plugin: 'java-library'
 
 
 repositories {
@@ -23,6 +31,7 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:31.1-jre'
+	implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -38,13 +47,19 @@ tasks.named('test') {
 }
 application {
 	// Define the main class for the application.
-	mainClass = 'com.commonwealthrobotics.HatRackMain'
+	mainClass = 'com.commonwealthrobotics.Main'
 }
 
+shadowJar {
+	archiveBaseName.set('lib')
+	archiveClassifier.set('')
+	archiveVersion.set('')
+ }
 jar {
 	manifest {
 		attributes 'Implementation-Title': 'BowlerStudioUpdater',
 				   'Implementation-Version': '0.0.1',
-				   'Main-Class': 'com.commonwealthrobotics.HatRackMain'
+				   'Main-Class': 'com.commonwealthrobotics.Main'
+				   
 	}
 }
