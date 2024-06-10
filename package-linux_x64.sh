@@ -92,10 +92,15 @@ $JAVA_HOME/bin/jpackage --input $BUILDDIR \
   --linux-shortcut \
   --icon $ICON \
   --copyright "Creative Commons" \
-  --vendor CommonWealthRobotics
+  --vendor CommonWealthRobotics \
  --linux-menu-group=Education;Graphics;Development; \
   --java-options '--enable-preview'
 echo "Deb built!"
+ls -al
+rm -rf release
+mkdir release
+cp *.deb release/
+cp *.AppImage release/
 #sudo apt remove bowlerlauncher
 #sudo dpkg -i *.deb
 

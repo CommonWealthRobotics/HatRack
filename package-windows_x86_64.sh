@@ -65,3 +65,8 @@ $PACKAGE --input "$INPUT_DIR/" \
   --win-dir-chooser \
   --win-per-user-install \
   --java-options '--enable-preview'
+ls -al
+rm -rf release
+mkdir release
+cp *.exe release/
+cp *.zip release/
