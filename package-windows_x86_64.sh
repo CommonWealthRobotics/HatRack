@@ -35,7 +35,7 @@ $PACKAGE --input "$INPUT_DIR/" \
   --main-jar "$JAR_NAME" \
   --main-class "com.commonwealthrobotics.HatRackMain" \
   --type "app-image" \
-  --temp "temp1" --verbose --win-console \
+  --temp "temp1"  \
   --app-version "$VERSION" \
   --icon "$ICON" \
   --java-options '--enable-preview'
@@ -49,7 +49,7 @@ $PACKAGE --input "$INPUT_DIR/" \
   --main-jar "$JAR_NAME" \
   --main-class "com.commonwealthrobotics.HatRackMain" \
   --type "exe" \
-  --temp "temp2" --verbose --win-console \
+  --temp "temp2" \
   --app-version "$VERSION" \
   --icon "$ICON" \
   --win-shortcut \
