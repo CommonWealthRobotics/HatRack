@@ -38,12 +38,12 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="yesButton" mnemonicParsing="false" onAction="#onYes" text="Yes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Button fx:id="yesButton" mnemonicParsing="false" onAction="#onYes" text="Update Please!" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                      <children>
-                        <Button fx:id="noButton" mnemonicParsing="false" onAction="#onNo" text="No" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Button fx:id="noButton" mnemonicParsing="false" onAction="#onNo" text="Keep It The Way It Was" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>
