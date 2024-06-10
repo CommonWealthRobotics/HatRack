@@ -50,7 +50,7 @@ $PACKAGE --input "$INPUT_DIR/" \
   --java-options '--enable-preview'
   
 echo "Zipping standalone version"
-zip -r  $NAME-$VERSION.zip $NAME/
+7z a $NAME-$VERSION.zip $NAME/
 echo "Building system wide installer" 
 
 $PACKAGE --input "$INPUT_DIR/" \
