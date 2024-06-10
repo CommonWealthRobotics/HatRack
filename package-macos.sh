@@ -33,7 +33,7 @@ else
 	mv $JAVA_HOME/$JVM/* $JAVA_HOME/
 fi
 
-./gradlew jar
+./gradlew shadowJar
 echo "Test jar in: $SCRIPT_DIR"
 DIR=$SCRIPT_DIR/lib/build/libs/
 INPUT_DIR="$SCRIPT_DIR/input"
