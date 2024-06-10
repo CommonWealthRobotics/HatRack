@@ -12,3 +12,5 @@ build
 **.AppImage**
 **.classpath**
 /input/
+/temp/
+/BowlerLauncher*.exe

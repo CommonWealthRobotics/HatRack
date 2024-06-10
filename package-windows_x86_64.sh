@@ -3,6 +3,7 @@ echo "Windows bundling"
 JVM=zulu17.50.19-ca-fx-jdk17.0.11-win_x64
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+
 ZIP=$JVM.zip
 export JAVA_HOME=$HOME/bin/java17/
 
@@ -15,13 +16,13 @@ JAR_NAME=lib.jar
 $JAVA_HOME/bin/java.exe -jar $DIR/$JAR_NAME
 echo "Test jar complete"
 NAME=BowlerLauncher
-ICON=BowlerStudioIcon.png
+ICON=splash.ico
 
 VERSION=0.0.1
 PACKAGE=$JAVA_HOME/bin/jpackage.exe
 mkdir -p "$INPUT_DIR"
 cp "$DIR/$JAR_NAME" "$INPUT_DIR/"
-
+# depends on WiX https://github.com/wixtoolset/wix3/releases
 $PACKAGE --input "$INPUT_DIR/" \
   --name "$NAME" \
   --main-jar "$JAR_NAME" \
