@@ -70,5 +70,5 @@ $PACKAGE --input "$INPUT_DIR/" \
 ls -al
 rm -rf release
 mkdir release
-cp *.exe release/
-cp *.zip release/
+cp $NAME-$VERSION.exe release/
+cp $NAME-$VERSION.zip release/
