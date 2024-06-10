@@ -10,3 +10,4 @@ build
 /BowlerStudioUpdater/
 /BowlerStudioUpdater.AppDir/
 **.AppImage**
+**.classpath**
