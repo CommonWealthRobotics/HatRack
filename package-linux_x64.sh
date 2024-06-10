@@ -2,7 +2,7 @@
 #   zulu17.50.19-ca-fx-jdk17.0.11-linux_x64
 NAME=BowlerLauncher
 VERSION=0.0.1
-MAIN=com.commonwealthrobotics.HatRackMain
+MAIN=com.commonwealthrobotics.Main
 
 if [[ -z "${VERSION_SEMVER}" ]]; then
   VERSION=4.0.4
@@ -32,7 +32,7 @@ echo "Test jar in: $SCRIPT_DIR"
 DIR=$SCRIPT_DIR/lib/build/libs/
 INPUT_DIR="$SCRIPT_DIR/input"
 JAR_NAME=lib.jar
-$JAVA_HOME/bin/java -jar $DIR/$JAR_NAME
+#$JAVA_HOME/bin/java -jar $DIR/$JAR_NAME
 echo "Test jar complete"
 ls -al $JAVA_HOME
 

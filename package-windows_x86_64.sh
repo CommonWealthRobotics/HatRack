@@ -1,7 +1,7 @@
 echo "Windows bundling"
 VERSION=0.0.1
 NAME=BowlerLauncher
-MAIN=com.commonwealthrobotics.HatRackMain
+MAIN=com.commonwealthrobotics.Main
 
 if [[ -z "${VERSION_SEMVER}" ]]; then
   VERSION=4.0.4
@@ -33,7 +33,7 @@ echo "Test jar in: $SCRIPT_DIR"
 DIR=$SCRIPT_DIR/lib/build/libs/
 INPUT_DIR="$SCRIPT_DIR/input"
 JAR_NAME=lib.jar
-$JAVA_HOME/bin/java.exe -jar $DIR/$JAR_NAME
+#$JAVA_HOME/bin/java.exe -jar $DIR/$JAR_NAME
 echo "Test jar complete"
 
 ICON=$NAME.ico
