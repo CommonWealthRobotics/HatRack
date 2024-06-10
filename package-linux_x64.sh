@@ -93,7 +93,7 @@ $JAVA_HOME/bin/jpackage --input $BUILDDIR \
   --icon $ICON \
   --copyright "Creative Commons" \
   --vendor CommonWealthRobotics \
- --linux-menu-group=Education;Graphics;Development; \
+ --linux-menu-group "Education;Graphics;Development;" \
   --java-options '--enable-preview'
 echo "Deb built!"
 ls -al
