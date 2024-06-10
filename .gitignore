@@ -13,6 +13,6 @@ build
 **.classpath**
 /input/
 /temp*/
-/BowlerLauncher*.exe
+/BowlerLauncher*.*
 /BowlerLauncher/
 HatRack*
