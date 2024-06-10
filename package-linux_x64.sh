@@ -28,7 +28,12 @@ else
 fi
 
 ./gradlew jar
-
+echo "Test jar in: $SCRIPT_DIR"
+DIR=$SCRIPT_DIR/lib/build/libs/
+INPUT_DIR="$SCRIPT_DIR/input"
+JAR_NAME=lib.jar
+$JAVA_HOME/bin/java.exe -jar $DIR/$JAR_NAME
+echo "Test jar complete"
 ls -al $JAVA_HOME
 
 
