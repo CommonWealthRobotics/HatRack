@@ -81,5 +81,6 @@ $PACKAGE --input "$INPUT_DIR/" \
 ls -al
 rm -rf release
 mkdir release
+export ARCH=x86_64
 cp $NAME-$VERSION.exe release/$NAME-$ARCH.exe
 cp $NAME-$VERSION.zip release/$NAME-$ARCH.zip

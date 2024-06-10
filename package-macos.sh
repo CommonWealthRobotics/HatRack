@@ -13,7 +13,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ARCH=x86_64
 JVM=zulu17.50.19-ca-fx-jdk17.0.11-macosx_x64
 if [[ $(uname -m) == 'arm64' ]]; then
-  ARCH=arm46
+  ARCH=arm64
   echo "M1 Mac detected https://cdn.azul.com/zulu/bin/zulu17.50.19-ca-fx-jdk17.0.11-macosx_aarch64.tar.gz" 
   JVM=zulu17.50.19-ca-fx-jdk17.0.11-macosx_aarch64
 else
