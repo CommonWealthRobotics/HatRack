@@ -82,7 +82,7 @@ fi
 echo "Testing executable:"
 ./$NAME-$ARCH.AppImage one two
 echo "Building .deb..."
-rm *.deb
+rm -rf *.deb
 $JAVA_HOME/bin/jpackage --input $BUILDDIR \
   --name $NAME \
   --main-jar $TARGETJAR \
