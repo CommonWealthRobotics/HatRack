@@ -11,7 +11,7 @@ if test -d $JAVA_HOME/$JVM/; then
   echo "$JAVA_HOME exists."
 else
 	mkdir -p $JAVA_HOME
-	wget https://cdn.azul.com/zulu/bin/$ZIP 
+	curl https://cdn.azul.com/zulu/bin/$ZIP -o $ZIP
 	unzip $ZIP -d $JAVA_HOME
 	mv $JAVA_HOME/$JVM/* $JAVA_HOME/
 fi
