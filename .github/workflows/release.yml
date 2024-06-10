@@ -12,6 +12,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Build
+      env:
+         VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-linux_x64.sh
     - name: Upload math result for job Linux
       uses: actions/upload-artifact@v3
@@ -28,6 +30,8 @@ jobs:
     - uses: microsoft/setup-msbuild@v1.1
     - uses: milliewalky/setup-7-zip@v1
     - name: Build
+      env:
+         VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-windows_x86_64.sh
     - name: Upload math result for job Windows
       uses: actions/upload-artifact@v3
@@ -40,6 +44,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Build
+      env:
+         VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-macos.sh
     - name: Upload math result for job Mac
       uses: actions/upload-artifact@v3
@@ -52,6 +58,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Build
+      env:
+         VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-macos.sh
     - name: Upload math result for job Mac
       uses: actions/upload-artifact@v3
