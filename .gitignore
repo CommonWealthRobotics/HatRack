@@ -11,3 +11,4 @@ build
 /BowlerStudioUpdater.AppDir/
 **.AppImage**
 **.classpath**
+/input/
