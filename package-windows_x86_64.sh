@@ -24,10 +24,11 @@ VERSION=0.0.1
 PACKAGE=$JAVA_HOME/bin/jpackage.exe
 mkdir -p "$INPUT_DIR"
 cp "$DIR/$JAR_NAME" "$INPUT_DIR/"
-#rm -rf temp*
+
+#$PACKAGE --input "$INPUT_DIR/" --name "$NAME" --main-jar "$JAR_NAME" --app-version "$VERSION" --icon "$ICON" --type "exe" --resource-dir "temp2" --verbose
+#exit 1
+rm -rf temp*
 rm -rf $NAME
-$PACKAGE --input "$INPUT_DIR/" --main-jar "$JAR_NAME" --app-version "$VERSION" --icon "$ICON" --type "exe" --resource-dir "temp2" --verbose
-exit 
 # depends on WiX https://github.com/wixtoolset/wix3/releases
 $PACKAGE --input "$INPUT_DIR/" \
   --name "$NAME" \
@@ -52,4 +53,7 @@ $PACKAGE --input "$INPUT_DIR/" \
   --app-version "$VERSION" \
   --icon "$ICON" \
   --win-shortcut \
+  --win-menu \
+  --win-dir-chooser \
+  --win-per-user-install \
   --java-options '--enable-preview'
