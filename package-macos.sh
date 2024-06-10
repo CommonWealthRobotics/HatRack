@@ -3,6 +3,12 @@ NAME=BowlerLauncher
 VERSION=1.0.1
 MAIN=com.commonwealthrobotics.HatRackMain
 
+if [[ -z "${VERSION_SEMVER}" ]]; then
+  VERSION=4.0.4
+else
+  VERSION="${VERSION_SEMVER}"
+fi
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ARCH=x86_64
 JVM=zulu17.50.19-ca-fx-jdk17.0.11-macosx_x64
