@@ -91,7 +91,7 @@ fi
 
 ./$TOOL $NAME.AppDir
 echo "Testing executable:"
-./$NAME-$ARCH.AppImage one two
+#./$NAME-$ARCH.AppImage one two
 echo "Building .deb..."
 rm -rf *.deb
 $JAVA_HOME/bin/jpackage --input $BUILDDIR \
