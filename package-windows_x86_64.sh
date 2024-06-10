@@ -13,7 +13,7 @@ else
 	mkdir -p $JAVA_HOME
 	curl https://cdn.azul.com/zulu/bin/$ZIP -o $ZIP
 	#unzip $ZIP -d $JAVA_HOME
-	7z x $ZIP -o $JAVA_HOME
+	7z x $ZIP -o$JAVA_HOME
 	mv $JAVA_HOME/$JVM/* $JAVA_HOME/
 fi
 
