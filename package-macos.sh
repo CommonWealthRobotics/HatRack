@@ -66,4 +66,4 @@ $JAVA_HOME/bin/jpackage --input $BUILDDIR \
 ls -al
 rm -rf release
 mkdir release
-mv *.dmg release/
+mv $NAME-$VERSION.dmg release/$NAME-$ARCH.dmg
