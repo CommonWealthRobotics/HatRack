@@ -1,21 +1,25 @@
-#https://cdn.azul.com/zulu/bin/zulu17.50.19-ca-fx-jdk17.0.11-win_x64.zip
+#https://cdn.azul.com/zulu/bin/zulu8.78.0.19-ca-fx-jdk8.0.412-linux_x64.tar.gz
 #   zulu17.50.19-ca-fx-jdk17.0.11-win_x64
-JVM=zulu17.50.19-ca-fx-jdk17.0.11-win_x64
+JVM=zulu8.78.0.19-ca-fx-jdk8.0.412-linux_x64
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 set -e
-ZIP=$JVM.zip
+ZIP=$JVM.tar.gz
 export JAVA_HOME=$HOME/bin/java17/
 if test -d $JAVA_HOME/$JVM/; then
   echo "$JAVA_HOME exists."
 else
 	mkdir -p $JAVA_HOME
 	wget https://cdn.azul.com/zulu/bin/$ZIP 
-	unzip $ZIP -d $JAVA_HOME
+	tar -xvzf $ZIP -C $JAVA_HOME
 	mv $JAVA_HOME/$JVM/* $JAVA_HOME/
 fi
 
 ./gradlew jar
+
+ls -al $JAVA_HOME
+
+exit
 
 VERSION=0.0.1
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
