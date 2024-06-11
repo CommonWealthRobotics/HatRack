@@ -25,14 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+//import java.util.zip.ZipEntry;
+//import java.util.zip.ZipFile;
 
 import org.apache.commons.compress.archivers.examples.Archiver;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarUtils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -110,14 +111,20 @@ public class JvmManager {
 		return cmd + " -jar ";
 	}
 
+    public static boolean isExecutable(ZipArchiveEntry entry) {
+        int unixMode = entry.getUnixMode();
+        // Check if any of the executable bits are set for user, group, or others.
+        // User executable: 0100 (0x40), Group executable: 0010 (0x10), Others executable: 0001 (0x01)
+        return (unixMode & 0x49) != 0;
+    }
 	private static void unzip(File path, String dir) throws Exception {
 		String fileBaseName = FilenameUtils.getBaseName(path.getName().toString());
 		Path destFolderPath = new File(dir).toPath();
 
-		try (ZipFile zipFile = new ZipFile(path, ZipFile.OPEN_READ, Charset.defaultCharset())) {
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+		try (ZipFile zipFile = ZipFile.builder().setFile(path).get()) {
+			Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
 			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
+				ZipArchiveEntry entry = entries.nextElement();
 				Path entryPath = destFolderPath.resolve(entry.getName());
 				if (entryPath.normalize().startsWith(destFolderPath.normalize())) {
 					if (entry.isDirectory()) {
@@ -126,19 +133,24 @@ public class JvmManager {
 						Files.createDirectories(entryPath.getParent());
 						try (InputStream in = zipFile.getInputStream(entry)) {
 							try {
-								ZipArchiveEntry ar = new ZipArchiveEntry( entry);
 								//ar.setExternalAttributes(entry.extraAttributes);
-								if (ar.isUnixSymlink()) {
+								if (entry.isUnixSymlink()) {
 									String text = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
 											.lines().collect(Collectors.joining("\n"));
-									Files.createSymbolicLink(entryPath, Paths.get(".", text), null);
+									Path target = Paths.get(".", text);
+									System.out.println("Creating symlink "+entryPath+" with "+target);
+
+									Files.createSymbolicLink(entryPath, target);
 									continue;
 								}
-							} catch (java.lang.ClassCastException ex) {
+							} catch (Exception ex) {
 								ex.printStackTrace();
 							}
 							try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
 								IOUtils.copy(in, out);
+							}
+							if(isExecutable(entry)) {
+								entryPath.toFile().setExecutable(true);
 							}
 						}
 					}
