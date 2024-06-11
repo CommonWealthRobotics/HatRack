@@ -178,7 +178,9 @@ public class LatestFromGithubLaunchUI {
 		String fc =!isWin()?
 					command + " " + bindir + myVersionString + "/" + jarName+"":
 						command + " \"" + bindir + myVersionString + "/" + jarName+"\"";
-
+		for(String s:argsFromSystem) {
+			fc+=(" "+s);
+		}
 		
 		String finalCommand=fc;
 		System.out.println("Running:\n\n"+finalCommand+"\n\n");
