@@ -82,5 +82,5 @@ ls -al
 rm -rf release
 mkdir release
 export ARCH=x86_64
-cp $NAME-$VERSION.exe release/$NAME-$ARCH.exe
-cp $NAME-$VERSION.zip release/$NAME-$ARCH.zip
+cp $NAME-$VERSION.exe release/$NAME-Windows-$ARCH.exe
+cp $NAME-$VERSION.zip release/$NAME-Windows-$ARCH.zip

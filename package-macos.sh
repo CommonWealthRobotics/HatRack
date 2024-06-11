@@ -77,4 +77,4 @@ $JAVA_HOME/bin/jpackage --input $BUILDDIR \
 ls -al
 rm -rf release
 mkdir release
-mv $NAME-$VERSION.dmg release/$NAME-$ARCH.dmg
+mv $NAME-$VERSION.dmg release/$NAME-MacOS-$ARCH.dmg
