@@ -19,3 +19,5 @@ HatRack*
 /zulu*.zip*
 /zulu*.tar*
 **.deb
+release
+**.DS_Store**
