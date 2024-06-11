@@ -139,72 +139,78 @@ public class LatestFromGithubLaunchUI {
 	}
 
 	public void launchApplication() {
-		Platform.runLater(() -> stage.close());
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		String command;
-		try {
-			command = JvmManager.getCommandString(project, repoName, myVersionString,downloadJsonURL,sizeOfJson,progress,bindir);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.exit(1);
-			return;
-		}
-//		
-//		for (int i = 4; i < args.length; i++) {
-//			command += " " + args[i];
-//		}
-		try {
-			myVersionFile.createNewFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		BufferedWriter writer;
-		try {
-			writer = new BufferedWriter(new FileWriter(myVersionFileString));
-			writer.write(myVersionString);
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		String fc =!isWin()?
-					command + " " + bindir + myVersionString + "/" + jarName+"":
-						command + " \"" + bindir + myVersionString + "/" + jarName+"\"";
-		for(String s:argsFromSystem) {
-			fc+=(" "+s);
-		}
-		
-		String finalCommand=fc;
-		System.out.println("Running:\n\n"+finalCommand+"\n\n");
+		Platform.runLater(() -> {
+			yesButton.setDisable(true);
+			noButton.setDisable(true);
+		});
 		new Thread(() -> {
+			String command;
 			try {
-				Process process = Runtime.getRuntime().exec(finalCommand);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-				String line;
-				while ((line = reader.readLine()) != null && process.isAlive()) {
-					System.out.println(line);
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				reader.close();
-				System.out.println("LatestFromGithubLaunch clean exit");
-				System.exit(0);
+				command = JvmManager.getCommandString(project, repoName, myVersionString,downloadJsonURL,sizeOfJson,progress,bindir);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+				return;
+			}
+			Platform.runLater(() -> stage.close());
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	//		
+	//		for (int i = 4; i < args.length; i++) {
+	//			command += " " + args[i];
+	//		}
+			try {
+				myVersionFile.createNewFile();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			BufferedWriter writer;
+			try {
+				writer = new BufferedWriter(new FileWriter(myVersionFileString));
+				writer.write(myVersionString);
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+			String fc =!isWin()?
+						command + " " + bindir + myVersionString + "/" + jarName+"":
+							command + " \"" + bindir + myVersionString + "/" + jarName+"\"";
+			for(String s:argsFromSystem) {
+				fc+=(" "+s);
+			}
+			
+			String finalCommand=fc;
+			System.out.println("Running:\n\n"+finalCommand+"\n\n");
+			new Thread(() -> {
+				try {
+					Process process = Runtime.getRuntime().exec(finalCommand);
+					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+					String line;
+					while ((line = reader.readLine()) != null && process.isAlive()) {
+						System.out.println(line);
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					reader.close();
+					System.out.println("LatestFromGithubLaunch clean exit");
+					System.exit(0);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}).start();
 		}).start();
 	}
 
