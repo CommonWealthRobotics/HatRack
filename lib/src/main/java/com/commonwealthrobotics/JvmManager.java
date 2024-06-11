@@ -59,28 +59,7 @@ public class JvmManager {
 
 		HashMap<String, Object> database = gson.fromJson(jsonText, TT_mapStringString);
 		String key = "UNKNOWN";
-		if (LatestFromGithubLaunchUI.isLin()) {
-			if (LatestFromGithubLaunchUI.isArm()) {
-				key = "Linux-aarch64";
-			} else {
-				key = "Linux-x64";
-			}
-		}
-
-		if (LatestFromGithubLaunchUI.isMac()) {
-			if (LatestFromGithubLaunchUI.isArm()) {
-				key = "Mac-aarch64";
-			} else {
-				key = "Mac-x64";
-			}
-		}
-		if (LatestFromGithubLaunchUI.isWin()) {
-			if (LatestFromGithubLaunchUI.isArm()) {
-				key = "UNKNOWN";
-			} else {
-				key = "Windows-x64";
-			}
-		}
+		key = discoverKey(key);
 		Map<String, Object> vm = (Map<String, Object>) database.get(key);
 		String baseURL = vm.get("url").toString();
 		String type = vm.get("type").toString();
@@ -111,12 +90,39 @@ public class JvmManager {
 		return cmd + " -jar ";
 	}
 
-    public static boolean isExecutable(ZipArchiveEntry entry) {
-        int unixMode = entry.getUnixMode();
-        // Check if any of the executable bits are set for user, group, or others.
-        // User executable: 0100 (0x40), Group executable: 0010 (0x10), Others executable: 0001 (0x01)
-        return (unixMode & 0x49) != 0;
-    }
+	private static String discoverKey(String key) {
+		if (LatestFromGithubLaunchUI.isLin()) {
+			if (LatestFromGithubLaunchUI.isArm()) {
+				key = "Linux-aarch64";
+			} else {
+				key = "Linux-x64";
+			}
+		}
+
+		if (LatestFromGithubLaunchUI.isMac()) {
+			if (LatestFromGithubLaunchUI.isArm()) {
+				key = "Mac-aarch64";
+			} else {
+				key = "Mac-x64";
+			}
+		}
+		if (LatestFromGithubLaunchUI.isWin()) {
+			if (LatestFromGithubLaunchUI.isArm()) {
+				key = "UNKNOWN";
+			} else {
+				key = "Windows-x64";
+			}
+		}
+		return key;
+	}
+
+	public static boolean isExecutable(ZipArchiveEntry entry) {
+		int unixMode = entry.getUnixMode();
+		// Check if any of the executable bits are set for user, group, or others.
+		// User executable: 0100 (0x40), Group executable: 0010 (0x10), Others
+		// executable: 0001 (0x01)
+		return (unixMode & 0x49) != 0;
+	}
 	private static void unzip(File path, String dir) throws Exception {
 		String fileBaseName = FilenameUtils.getBaseName(path.getName().toString());
 		Path destFolderPath = new File(dir).toPath();
