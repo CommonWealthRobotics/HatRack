@@ -39,13 +39,14 @@ import com.google.gson.reflect.TypeToken;
 
 public class LatestFromGithubLaunchUI {
 	public static String[] argsFromSystem;
-	public static String[] args;
-
+	//public static String[] args;
+	public static String project;
 	public static Stage stage;
 
 	public static String latestVersionString = "";
 	public static String myVersionString = "None";
-	public static long size = 0;
+	public static long sizeOfJar = 0;
+	public static long sizeOfJson = 0;
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
 
@@ -78,7 +79,11 @@ public class LatestFromGithubLaunchUI {
 
 	private String myVersionFileString;
 
-	private static String downloadURL;
+	private static String downloadJarURL;
+	private static String downloadJsonURL;
+	
+	public static String repoName;
+	public static String jarName;
 
 	@FXML
 	void onNo(ActionEvent event) {
@@ -94,10 +99,11 @@ public class LatestFromGithubLaunchUI {
 		new Thread(() -> {
 
 			try {
-				URL url = new URL(downloadURL);
+				String downloadURL2 = downloadJarURL;
+				URL url = new URL(downloadURL2);
 				URLConnection connection = url.openConnection();
 				InputStream is = connection.getInputStream();
-				ProcessInputStream pis = new ProcessInputStream(is, (int) size);
+				ProcessInputStream pis = new ProcessInputStream(is, (int) sizeOfJar);
 				pis.addListener(new Listener() {
 					@Override
 					public void process(double percent) {
@@ -107,9 +113,9 @@ public class LatestFromGithubLaunchUI {
 					}
 				});
 				File folder = new File(bindir + latestVersionString + "/");
-				File exe = new File(bindir + latestVersionString + "/" + args[2]);
+				File exe = new File(bindir + latestVersionString + "/" + jarName);
 
-				if (!folder.exists() || !exe.exists() || size != exe.length()) {
+				if (!folder.exists() || !exe.exists() || sizeOfJar != exe.length()) {
 					folder.mkdirs();
 					exe.createNewFile();
 					byte dataBuffer[] = new byte[1024];
@@ -122,7 +128,7 @@ public class LatestFromGithubLaunchUI {
 					pis.close();
 
 				}
-				if (folder.exists() && exe.exists() && size == exe.length())
+				if (folder.exists() && exe.exists() && sizeOfJar == exe.length())
 					myVersionString = latestVersionString;
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -140,11 +146,19 @@ public class LatestFromGithubLaunchUI {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		String command = args[3];
-		
-		for (int i = 4; i < args.length; i++) {
-			command += " " + args[i];
+		String command;
+		try {
+			command = JvmManager.getCommandString(project, repoName, myVersionString,downloadJsonURL,sizeOfJson,progress,bindir);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+			return;
 		}
+//		
+//		for (int i = 4; i < args.length; i++) {
+//			command += " " + args[i];
+//		}
 		try {
 			myVersionFile.createNewFile();
 		} catch (IOException e) {
@@ -162,8 +176,8 @@ public class LatestFromGithubLaunchUI {
 		}
 
 		String fc =!isWin()?
-					command + " " + bindir + myVersionString + "/" + args[2]+"":
-						command + " \"" + bindir + myVersionString + "/" + args[2]+"\"";
+					command + " " + bindir + myVersionString + "/" + jarName+"":
+						command + " \"" + bindir + myVersionString + "/" + jarName+"\"";
 
 		
 		String finalCommand=fc;
@@ -192,8 +206,17 @@ public class LatestFromGithubLaunchUI {
 		}).start();
 	}
 
-	private boolean isWin() {
+	public static boolean isWin() {
 		return System.getProperty("os.name").toLowerCase().contains("windows");
+	}
+	public static boolean isLin() {
+		return System.getProperty("os.name").toLowerCase().contains("linux");
+	}
+	public static boolean isMac() {
+		return System.getProperty("os.name").toLowerCase().contains("mac");
+	}
+	public static boolean isArm() {
+		return System.getProperty("os.arch").toLowerCase().contains("aarch64");
 	}
 
 	private static String readAll(Reader rd) throws IOException {
@@ -221,11 +244,17 @@ public class LatestFromGithubLaunchUI {
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> assets = (List<Map<String, Object>>) database.get("assets");
 			for (Map<String, Object> key : assets) {
-				if (((String) key.get("name")).contentEquals(args[2])) {
-					downloadURL = (String) key.get("browser_download_url");
-					size = ((Double) key.get("size")).longValue();
-					System.out.println(downloadURL + " Size " + size + " bytes");
+				if (((String) key.get("name")).contentEquals(jarName)) {
+					downloadJarURL = (String) key.get("browser_download_url");
+					sizeOfJar = ((Double) key.get("size")).longValue();
+					System.out.println(downloadJarURL + " Size " + sizeOfJar + " bytes");
 				}
+				if (((String) key.get("name")).contentEquals("jvm.json")) {
+					downloadJsonURL = (String) key.get("browser_download_url");
+					sizeOfJson = ((Double) key.get("size")).longValue();
+					System.out.println(downloadJsonURL + " Size " + sizeOfJson + " bytes");
+				}
+				
 			}
 		} finally {
 			is.close();
@@ -239,15 +268,15 @@ public class LatestFromGithubLaunchUI {
 		assert currentVersion != null : "fx:id=\"currentVersion\" was not injected: check your FXML file 'ui.fxml'.";
 
 		try {
-			readCurrentVersion("https://api.github.com/repos/" + args[0] + "/" + args[1] + "/releases/latest");
-			binary.setText(args[0] + "\n" + args[1] + "\n" + args[2] + "\n" + (size / 1000000) + " Mb");
+			readCurrentVersion("https://api.github.com/repos/" + project + "/" + repoName + "/releases/latest");
+			binary.setText(project + "\n" + repoName + "\n" + jarName + "\n" + (sizeOfJar / 1000000) + " Mb");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		stage.setTitle("Auto-Updater for " + args[1]);
+		stage.setTitle("Auto-Updater for " + repoName);
 		currentVersion.setText(latestVersionString);
-		bindir = System.getProperty("user.home") + "/bin/" + args[1] + "Install/";
+		bindir = System.getProperty("user.home") + "/bin/" + repoName + "Install/";
 		myVersionFileString = bindir + "currentversion.txt";
 		myVersionFile = new File(myVersionFileString);
 		bindirFile = new File(bindir);

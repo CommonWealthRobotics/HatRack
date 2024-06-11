@@ -25,14 +25,10 @@ public class Main  extends Application {
 	public static void main(String [] args) {
 		LatestFromGithubLaunchUI.argsFromSystem=args;
 		
-		LatestFromGithubLaunchUI.args=new String[] {
-				"CommonWealthRobotics",
-				"BowlerStudio",
-				"BowlerStudio.jar",
-				"/home/hephaestus/bin/java8/bin/java",
-				"-Dprism.forceGPU=true",
-				"-jar" 
-		};
+		LatestFromGithubLaunchUI.project="CommonWealthRobotics";
+		LatestFromGithubLaunchUI.repoName=		"BowlerStudio";
+		LatestFromGithubLaunchUI.jarName=		"BowlerStudio.jar";
+		
 		launch(args);
 	}
 
