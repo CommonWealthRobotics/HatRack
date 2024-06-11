@@ -7,21 +7,30 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.compress.archivers.examples.Archiver;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarUtils;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -96,8 +105,29 @@ public class JvmManager {
 		return cmd + " -jar ";
 	}
 
-	private static void unzip(File zip, String dir) {
+	private static void unzip(File path, String dir) throws Exception {
+		String fileBaseName = FilenameUtils.getBaseName(path.getName().toString());
+		Path destFolderPath = Paths.get(path.getParent().toString(), fileBaseName);
 
+		try (ZipFile zipFile = new ZipFile(path, ZipFile.OPEN_READ, Charset.defaultCharset())) {
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				Path entryPath = destFolderPath.resolve(entry.getName());
+				if (entryPath.normalize().startsWith(destFolderPath.normalize())) {
+					if (entry.isDirectory()) {
+						Files.createDirectories(entryPath);
+					} else {
+						Files.createDirectories(entryPath.getParent());
+						try (InputStream in = zipFile.getInputStream(entry)) {
+							try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
+								IOUtils.copy(in, out);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private static void untar(File tarFile, String dir) throws Exception {
@@ -127,17 +157,6 @@ public class JvmManager {
 				if(bits(b[1]).endsWith("1")) {
 					destPath.setExecutable(true);
 				}
-//				if(destPath.getName().endsWith("javac")) {
-//					System.out.println("Java file is"+destPath);
-//					//System.out.println(mode);
-//					System.out.println("Bytes are "+bits(b[0])+","+bits(b[1])+","+bits(b[2])+","+bits(b[3]));
-//				}
-//				if(destPath.getName().endsWith("zip")) {
-//					System.out.println("zip file is"+destPath);
-//					//System.out.println(mode);
-//					System.out.println("Bytes are "+bits(b[0])+","+bits(b[1])+","+bits(b[2])+","+bits(b[3]));
-//
-//				}
 			}
 			tarEntry = tarIn.getNextTarEntry();
 		}
