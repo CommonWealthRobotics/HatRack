@@ -299,7 +299,7 @@ public class LatestFromGithubLaunchUI {
 		}
 
 		if (myVersionString.contentEquals(latestVersionString)) {
-			//launchApplication();
+			launchApplication();
 		}
 
 	}
