@@ -1,18 +1,21 @@
 package com.commonwealthrobotics;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -28,6 +32,7 @@ import org.apache.commons.compress.archivers.examples.Archiver;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarUtils;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -87,16 +92,16 @@ public class JvmManager {
 			jvmargs = new ArrayList<String>();
 		String jvmURL = baseURL + name + "." + type;
 		File jvmArchive = download("", jvmURL, 185000000, progress, bindir, name + "." + type);
-		File dest = new File(bindir+name);
-		if(!dest.exists()) {
+		File dest = new File(bindir + name);
+		if (!dest.exists()) {
 			if (type.toLowerCase().contains("zip")) {
 				unzip(jvmArchive, bindir);
 			}
 			if (type.toLowerCase().contains("tar.gz")) {
 				untar(jvmArchive, bindir);
 			}
-		}else {
-			System.out.println("Not extraction, VM exists "+dest.getAbsolutePath());
+		} else {
+			System.out.println("Not extraction, VM exists " + dest.getAbsolutePath());
 		}
 		String cmd = bindir + name + "/bin/java" + (LatestFromGithubLaunchUI.isWin() ? ".exe" : "") + " ";
 		for (String s : jvmargs) {
@@ -120,6 +125,18 @@ public class JvmManager {
 					} else {
 						Files.createDirectories(entryPath.getParent());
 						try (InputStream in = zipFile.getInputStream(entry)) {
+							try {
+								ZipArchiveEntry ar = new ZipArchiveEntry( entry);
+								//ar.setExternalAttributes(entry.extraAttributes);
+								if (ar.isUnixSymlink()) {
+									String text = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+											.lines().collect(Collectors.joining("\n"));
+									Files.createSymbolicLink(entryPath, Paths.get(".", text), null);
+									continue;
+								}
+							} catch (java.lang.ClassCastException ex) {
+								ex.printStackTrace();
+							}
 							try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
 								IOUtils.copy(in, out);
 							}
@@ -141,7 +158,7 @@ public class JvmManager {
 		// tarIn is a TarArchiveInputStream
 		while (tarEntry != null) {// create a file with the same name as the tarEntry
 			File destPath = new File(dest.toString() + System.getProperty("file.separator") + tarEntry.getName());
-			//System.out.println("working: " + destPath.getCanonicalPath());
+			// System.out.println("working: " + destPath.getCanonicalPath());
 			if (tarEntry.isDirectory()) {
 				destPath.mkdirs();
 			} else {
@@ -152,9 +169,9 @@ public class JvmManager {
 				fout.write(b);
 				fout.close();
 				int mode = tarEntry.getMode();
-				b= new byte[5];
+				b = new byte[5];
 				TarUtils.formatUnsignedOctalString(mode, b, 0, 4);
-				if(bits(b[1]).endsWith("1")) {
+				if (bits(b[1]).endsWith("1")) {
 					destPath.setExecutable(true);
 				}
 			}
@@ -162,6 +179,7 @@ public class JvmManager {
 		}
 		tarIn.close();
 	}
+
 	private static String bits(byte b) {
 		return String.format("%6s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
 	}
