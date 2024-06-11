@@ -107,7 +107,7 @@ public class JvmManager {
 
 	private static void unzip(File path, String dir) throws Exception {
 		String fileBaseName = FilenameUtils.getBaseName(path.getName().toString());
-		Path destFolderPath = Paths.get(path.getParent().toString(), fileBaseName);
+		Path destFolderPath = new File(dir).toPath();
 
 		try (ZipFile zipFile = new ZipFile(path, ZipFile.OPEN_READ, Charset.defaultCharset())) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
