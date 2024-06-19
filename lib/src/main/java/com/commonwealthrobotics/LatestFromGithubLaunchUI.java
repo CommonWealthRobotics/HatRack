@@ -44,7 +44,7 @@ public class LatestFromGithubLaunchUI {
 	public static Stage stage;
 
 	public static String latestVersionString = "";
-	public static String myVersionString = "None";
+	public static String myVersionString = null;
 	public static long sizeOfJar = 0;
 	public static long sizeOfJson = 0;
 	@FXML // ResourceBundle that was given to the FXMLLoader
@@ -142,6 +142,7 @@ public class LatestFromGithubLaunchUI {
 		Platform.runLater(() -> {
 			yesButton.setDisable(true);
 			noButton.setDisable(true);
+			stage.close();
 		});
 		new Thread(() -> {
 			String command;
@@ -153,7 +154,7 @@ public class LatestFromGithubLaunchUI {
 				System.exit(1);
 				return;
 			}
-			Platform.runLater(() -> stage.close());
+			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
@@ -274,13 +275,14 @@ public class LatestFromGithubLaunchUI {
 		assert progress != null : "fx:id=\"progress\" was not injected: check your FXML file 'ui.fxml'.";
 		assert previousVersion != null : "fx:id=\"previousVersion\" was not injected: check your FXML file 'ui.fxml'.";
 		assert currentVersion != null : "fx:id=\"currentVersion\" was not injected: check your FXML file 'ui.fxml'.";
-
+		boolean noInternet = false;
 		try {
 			readCurrentVersion("https://api.github.com/repos/" + project + "/" + repoName + "/releases/latest");
 			binary.setText(project + "\n" + repoName + "\n" + jarName + "\n" + (sizeOfJar / 1000000) + " Mb");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			noInternet=true;
 		}
 		stage.setTitle("Auto-Updater for " + repoName);
 		currentVersion.setText(latestVersionString);
@@ -305,10 +307,12 @@ public class LatestFromGithubLaunchUI {
 				e.printStackTrace();
 			}
 		}
-
-		if (myVersionString.contentEquals(latestVersionString)) {
-			launchApplication();
-		}
+		if(!noInternet) {
+			if (myVersionString.contentEquals(latestVersionString)) {
+				launchApplication();
+			}
+		}else
+			onNo(null);
 
 	}
 }

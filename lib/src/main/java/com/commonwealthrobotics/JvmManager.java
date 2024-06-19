@@ -49,8 +49,11 @@ public class JvmManager {
 
 	public static String getCommandString(String project, String repo, String version, String downloadJsonURL,
 			long sizeOfJson, ProgressBar progress, String bindir) throws Exception {
-
-		File exe = download(version, downloadJsonURL, sizeOfJson, progress, bindir, "jvm.json");
+		if(version==null)
+			throw new RuntimeException("Version can not be null");
+		File exe;
+		
+		exe= download(version, downloadJsonURL, sizeOfJson, progress, bindir, "jvm.json");
 		Type TT_mapStringString = new TypeToken<HashMap<String, Object>>() {
 		}.getType();
 		// chreat the gson object, this is the parsing factory
@@ -123,6 +126,7 @@ public class JvmManager {
 		// executable: 0001 (0x01)
 		return (unixMode & 0x49) != 0;
 	}
+
 	private static void unzip(File path, String dir) throws Exception {
 		String fileBaseName = FilenameUtils.getBaseName(path.getName().toString());
 		Path destFolderPath = new File(dir).toPath();
@@ -139,12 +143,12 @@ public class JvmManager {
 						Files.createDirectories(entryPath.getParent());
 						try (InputStream in = zipFile.getInputStream(entry)) {
 							try {
-								//ar.setExternalAttributes(entry.extraAttributes);
+								// ar.setExternalAttributes(entry.extraAttributes);
 								if (entry.isUnixSymlink()) {
 									String text = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
 											.lines().collect(Collectors.joining("\n"));
 									Path target = Paths.get(".", text);
-									System.out.println("Creating symlink "+entryPath+" with "+target);
+									System.out.println("Creating symlink " + entryPath + " with " + target);
 
 									Files.createSymbolicLink(entryPath, target);
 									continue;
@@ -155,7 +159,7 @@ public class JvmManager {
 							try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
 								IOUtils.copy(in, out);
 							}
-							if(isExecutable(entry)) {
+							if (isExecutable(entry)) {
 								entryPath.toFile().setExecutable(true);
 							}
 						}
@@ -204,38 +208,43 @@ public class JvmManager {
 
 	private static File download(String version, String downloadJsonURL, long sizeOfJson, ProgressBar progress,
 			String bindir, String filename) throws MalformedURLException, IOException, FileNotFoundException {
-		URL url = new URL(downloadJsonURL);
-		URLConnection connection = url.openConnection();
-		InputStream is = connection.getInputStream();
-		ProcessInputStream pis = new ProcessInputStream(is, (int) sizeOfJson);
-		pis.addListener(new Listener() {
-			@Override
-			public void process(double percent) {
-				System.out.println("Download percent " + percent);
-				Platform.runLater(() -> {
-					progress.setProgress(percent);
-				});
-			}
-		});
 		File folder = new File(bindir + version + "/");
 		File exe = new File(bindir + version + "/" + filename);
+		try {
+			URL url = new URL(downloadJsonURL);
+			URLConnection connection = url.openConnection();
+			InputStream is = connection.getInputStream();
+			ProcessInputStream pis = new ProcessInputStream(is, (int) sizeOfJson);
+			pis.addListener(new Listener() {
+				@Override
+				public void process(double percent) {
+					System.out.println("Download percent " + percent);
+					Platform.runLater(() -> {
+						progress.setProgress(percent);
+					});
+				}
+			});
 
-		if (!folder.exists() || !exe.exists()) {
-			System.out.println("Start Downloading " + filename);
-			folder.mkdirs();
-			exe.createNewFile();
-			byte dataBuffer[] = new byte[1024];
-			int bytesRead;
-			FileOutputStream fileOutputStream = new FileOutputStream(exe.getAbsoluteFile());
-			while ((bytesRead = pis.read(dataBuffer, 0, 1024)) != -1) {
-				fileOutputStream.write(dataBuffer, 0, bytesRead);
+			if (!folder.exists() || !exe.exists()) {
+				System.out.println("Start Downloading " + filename);
+				folder.mkdirs();
+				exe.createNewFile();
+				byte dataBuffer[] = new byte[1024];
+				int bytesRead;
+				FileOutputStream fileOutputStream = new FileOutputStream(exe.getAbsoluteFile());
+				while ((bytesRead = pis.read(dataBuffer, 0, 1024)) != -1) {
+					fileOutputStream.write(dataBuffer, 0, bytesRead);
+				}
+				fileOutputStream.close();
+				pis.close();
+				System.out.println("Finished downloading " + filename);
+			} else {
+				System.out.println("Not downloadeing, it existst " + filename);
 			}
-			fileOutputStream.close();
-			pis.close();
-			System.out.println("Finished downloading " + filename);
-		} else {
-			System.out.println("Not downloadeing, it existst " + filename);
+		} catch (Throwable t) {
+			t.printStackTrace();
 		}
+		System.out.println("Using JVM "+exe.getAbsolutePath());
 		return exe;
 	}
 }
