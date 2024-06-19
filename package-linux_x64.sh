@@ -110,8 +110,8 @@ echo "Deb built!"
 ls -al
 rm -rf release
 mkdir release
-cp *.deb release/$NAME-$ARCH.deb
-cp $NAME-$ARCH.AppImage release/$NAME-$ARCH.AppImage
+cp *.deb release/$NAME-Linux-$ARCH.deb
+cp $NAME-$ARCH.AppImage release/$NAME-Linux-$ARCH.AppImage
 #sudo apt remove bowlerlauncher
 #sudo dpkg -i *.deb
 
