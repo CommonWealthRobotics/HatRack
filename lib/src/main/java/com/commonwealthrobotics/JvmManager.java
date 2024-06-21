@@ -50,7 +50,7 @@ public class JvmManager {
 	public static String getCommandString(String project, String repo, String version, String downloadJsonURL,
 			long sizeOfJson, ProgressBar progress, String bindir) throws Exception {
 		if(version==null)
-			throw new RuntimeException("Version can not be null");
+			version="0.0.1";
 		File exe;
 		
 		exe= download(version, downloadJsonURL, sizeOfJson, progress, bindir, "jvm.json");

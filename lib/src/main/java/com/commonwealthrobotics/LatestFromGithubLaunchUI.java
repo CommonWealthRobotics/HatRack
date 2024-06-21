@@ -308,9 +308,12 @@ public class LatestFromGithubLaunchUI {
 			}
 		}
 		if(!noInternet) {
-			if (myVersionString.contentEquals(latestVersionString)) {
+			if(myVersionString==null)
 				launchApplication();
-			}
+			else
+				if (myVersionString.contentEquals(latestVersionString)) {
+					launchApplication();
+				}
 		}else
 			onNo(null);
 
