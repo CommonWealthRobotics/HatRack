@@ -17,20 +17,20 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 set -e
 ZIP=$JVM.zip
-export JAVA_HOME=$HOME/bin/java17/
-if test -d $JAVA_HOME/$JVM/; then
+export JAVA_HOME="$HOME/bin/java17/"
+if test -d "$JAVA_HOME/$JVM/"; then
   echo "$JAVA_HOME exists."
 else
-	mkdir -p $JAVA_HOME
+	mkdir -p "$JAVA_HOME"
 	curl https://cdn.azul.com/zulu/bin/$ZIP -o $ZIP
 	#unzip $ZIP -d $JAVA_HOME
-	7z x $ZIP -o$JAVA_HOME
-	mv $JAVA_HOME/$JVM/* $JAVA_HOME/
+	7z x $ZIP -o"$JAVA_HOME"
+	mv "$JAVA_HOME/$JVM/"* "$JAVA_HOME/"
 fi
-
+echo "Compile wiht gradle"
 ./gradlew shadowJar
 echo "Test jar in: $SCRIPT_DIR"
-DIR=$SCRIPT_DIR/lib/build/libs/
+DIR="$SCRIPT_DIR/lib/build/libs/"
 INPUT_DIR="$SCRIPT_DIR/input"
 JAR_NAME=lib.jar
 #$JAVA_HOME/bin/java.exe -jar $DIR/$JAR_NAME
@@ -41,7 +41,7 @@ cp splash.ico $NAME.ico
 
 
 
-PACKAGE=$JAVA_HOME/bin/jpackage.exe
+PACKAGE="$JAVA_HOME/bin/jpackage.exe"
 mkdir -p "$INPUT_DIR"
 cp "$DIR/$JAR_NAME" "$INPUT_DIR/"
 
@@ -50,7 +50,7 @@ cp "$DIR/$JAR_NAME" "$INPUT_DIR/"
 rm -rf temp*
 rm -rf $NAME
 # depends on WiX https://github.com/wixtoolset/wix3/releases
-$PACKAGE --input "$INPUT_DIR/" \
+"$PACKAGE" --input "$INPUT_DIR/" \
   --name "$NAME" \
   --main-jar "$JAR_NAME" \
   --main-class "$MAIN" \
@@ -62,10 +62,10 @@ $PACKAGE --input "$INPUT_DIR/" \
   
 echo "Zipping standalone version"
 rm -rf *.zip
-7z a $NAME-$VERSION.zip $NAME/
+7z a $NAME-$VERSION.zip "$NAME/"
 echo "Building system wide installer" 
 
-$PACKAGE --input "$INPUT_DIR/" \
+"$PACKAGE" --input "$INPUT_DIR/" \
   --name "$NAME" \
   --main-jar "$JAR_NAME" \
   --main-class "$MAIN" \
