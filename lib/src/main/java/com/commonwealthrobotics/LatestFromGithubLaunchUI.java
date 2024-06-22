@@ -137,12 +137,15 @@ public class LatestFromGithubLaunchUI {
 			launchApplication();
 		}).start();
 	}
-
+	private boolean launched=false;
 	public void launchApplication() {
+		if(launched)
+			throw new RuntimeException("Applicaion is already launched!");
+		launched=true;
 		Platform.runLater(() -> {
 			yesButton.setDisable(true);
 			noButton.setDisable(true);
-			stage.close();
+			
 		});
 		new Thread(() -> {
 			String command;
@@ -154,7 +157,9 @@ public class LatestFromGithubLaunchUI {
 				System.exit(1);
 				return;
 			}
-			
+			// Run this later to show downloading the JVM
+			Platform.runLater(() ->stage.close());
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
@@ -295,6 +300,7 @@ public class LatestFromGithubLaunchUI {
 		if (!myVersionFile.exists()) {
 
 			onYes(null);
+			return;
 		} else {
 			try {
 				myVersionString = new String(Files.readAllBytes(Paths.get(myVersionFileString))).trim();
@@ -308,14 +314,19 @@ public class LatestFromGithubLaunchUI {
 			}
 		}
 		if(!noInternet) {
-			if(myVersionString==null)
+			if(myVersionString==null) {
 				launchApplication();
+				return;
+			}
 			else
 				if (myVersionString.contentEquals(latestVersionString)) {
 					launchApplication();
+					return;
 				}
-		}else
+		}else {
 			onNo(null);
+			return;
+		}
 
 	}
 }

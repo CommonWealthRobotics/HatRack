@@ -78,7 +78,15 @@ public class JvmManager {
 		File dest = new File(bindir + name);
 		if (!dest.exists()) {
 			if (type.toLowerCase().contains("zip")) {
-				unzip(jvmArchive, bindir);
+				try {
+					unzip(jvmArchive, bindir);
+				}catch(java.util.zip.ZipException ex) {
+					System.out.println("Failed the extract, erasing and re-downloading");
+					jvmArchive.delete();
+					ex.printStackTrace();
+					return getCommandString(project,  repo,  version,  downloadJsonURL,
+							 sizeOfJson,  progress,  bindir);
+				}
 			}
 			if (type.toLowerCase().contains("tar.gz")) {
 				untar(jvmArchive, bindir);
@@ -218,7 +226,7 @@ public class JvmManager {
 			pis.addListener(new Listener() {
 				@Override
 				public void process(double percent) {
-					System.out.println("Download percent " + percent);
+					//System.out.println("Download percent " + percent);
 					Platform.runLater(() -> {
 						progress.setProgress(percent);
 					});
