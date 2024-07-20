@@ -20,6 +20,7 @@ if [[ $(uname -m) == 'aarch64' ]]; then
   JVM=zulu17.52.17-ca-fx-jdk17.0.12-linux_aarch64
 else
   echo "x86 Linux detected https://cdn.azul.com/zulu/bin/zulu17.50.19-ca-fx-jdk17.0.11-linux_x64.tar.gz" 
+fi
 
 set -e
 ZIP=$JVM.tar.gz
