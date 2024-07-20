@@ -11,12 +11,13 @@ on:
       - '*'
 jobs:
   linuxARM:
-    runs-on: ubuntu-24-arm
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Build
-      run: bash package-linux_x64.sh
+    - uses: actions/checkout@v2
+    - uses: pguyot/arm-runner-action@v2
+      with:
+        commands: |
+            bash package-linux_x64.sh
     - name: Upload math result for job Linux ARM
       uses: actions/upload-artifact@v3
       with:
