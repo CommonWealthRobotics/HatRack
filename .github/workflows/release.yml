@@ -14,7 +14,7 @@ jobs:
     - name: Build
       env:
          VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
-      run: bash package-linux_x64.sh
+      run: bash package-linux.sh
     - name: Upload math result for job Linux
       uses: actions/upload-artifact@v3
       with:

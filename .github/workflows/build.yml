@@ -10,26 +10,14 @@ on:
     branches:
       - '*'
 jobs:
-  linuxARM:
-    runs-on: ubuntu-24-arm
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Build
-      run: bash package-linux_x64.sh
-    - name: Upload math result for job Linux
-      uses: actions/upload-artifact@v3
-      with:
-          name: linux-lib
-          path: release/*
-          
+         
   linux:
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Build
-      run: bash package-linux_x64.sh
+      run: bash package-linux.sh
     - name: Upload math result for job Linux
       uses: actions/upload-artifact@v3
       with:
