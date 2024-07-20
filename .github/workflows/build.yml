@@ -1,9 +1,27 @@
 # test
-name: Publish package to GitHub Packages
-on: 
-   push:
-
+name: Test package 
+on:
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
 jobs:
+  linuxARM:
+    runs-on: ubuntu-24-arm
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: bash package-linux_x64.sh
+    - name: Upload math result for job Linux ARM
+      uses: actions/upload-artifact@v3
+      with:
+          name: linux-lib
+          path: release/*
   linux:
     runs-on: ubuntu-20.04
     steps:

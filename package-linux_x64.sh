@@ -14,6 +14,13 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 export ARCH=x86_64
 JVM=zulu17.50.19-ca-fx-jdk17.0.11-linux_x64
+if [[ $(uname -m) == 'aarch64' ]]; then
+  ARCH=arm64
+  echo "ARM linux detected https://cdn.azul.com/zulu/bin/zulu17.52.17-ca-fx-jdk17.0.12-linux_aarch64.tar.gz" 
+  JVM=zulu17.52.17-ca-fx-jdk17.0.12-linux_aarch64
+else
+  echo "x86 Linux detected https://cdn.azul.com/zulu/bin/zulu17.50.19-ca-fx-jdk17.0.11-linux_x64.tar.gz" 
+
 set -e
 ZIP=$JVM.tar.gz
 export JAVA_HOME=$HOME/bin/java17/
