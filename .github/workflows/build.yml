@@ -11,18 +11,18 @@ on:
       - '*'
 jobs:
   linuxARM:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24-arm
     steps:
-    - uses: actions/checkout@v2
-    - uses: pguyot/arm-runner-action@v2
-      with:
-        commands: |
-            bash package-linux_x64.sh
-    - name: Upload math result for job Linux ARM
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: bash package-linux_x64.sh
+    - name: Upload math result for job Linux
       uses: actions/upload-artifact@v3
       with:
           name: linux-lib
           path: release/*
+          
   linux:
     runs-on: ubuntu-20.04
     steps:
