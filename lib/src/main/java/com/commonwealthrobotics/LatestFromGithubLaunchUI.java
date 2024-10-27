@@ -87,13 +87,13 @@ public class LatestFromGithubLaunchUI {
 
 	@FXML
 	void onNo(ActionEvent event) {
-		System.out.println("No path");
+		//System.out.println("No path");
 		launchApplication();
 	}
 
 	@FXML
 	void onYes(ActionEvent event) {
-		System.out.println("Yes path");
+		//System.out.println("Yes path");
 		yesButton.setDisable(true);
 		noButton.setDisable(true);
 		new Thread(() -> {
@@ -194,14 +194,14 @@ public class LatestFromGithubLaunchUI {
 			}
 			
 			String finalCommand=fc;
-			System.out.println("Running:\n\n"+finalCommand+"\n\n");
+			//System.out.println("Running:\n\n"+finalCommand+"\n\n");
 			new Thread(() -> {
 				try {
 					Process process = Runtime.getRuntime().exec(finalCommand);
 					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 					String line;
 					while ((line = reader.readLine()) != null && process.isAlive()) {
-						System.out.println(line);
+						//System.out.println(line);
 						try {
 							Thread.sleep(10);
 						} catch (InterruptedException e) {
@@ -210,7 +210,7 @@ public class LatestFromGithubLaunchUI {
 						}
 					}
 					reader.close();
-					System.out.println("LatestFromGithubLaunch clean exit");
+					//System.out.println("LatestFromGithubLaunch clean exit");
 					System.exit(0);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -261,12 +261,12 @@ public class LatestFromGithubLaunchUI {
 				if (((String) key.get("name")).contentEquals(jarName)) {
 					downloadJarURL = (String) key.get("browser_download_url");
 					sizeOfJar = ((Double) key.get("size")).longValue();
-					System.out.println(downloadJarURL + " Size " + sizeOfJar + " bytes");
+					//System.out.println(downloadJarURL + " Size " + sizeOfJar + " bytes");
 				}
 				if (((String) key.get("name")).contentEquals("jvm.json")) {
 					downloadJsonURL = (String) key.get("browser_download_url");
 					sizeOfJson = ((Double) key.get("size")).longValue();
-					System.out.println(downloadJsonURL + " Size " + sizeOfJson + " bytes");
+					//System.out.println(downloadJsonURL + " Size " + sizeOfJson + " bytes");
 				}
 				
 			}

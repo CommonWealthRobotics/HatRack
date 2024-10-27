@@ -81,7 +81,7 @@ public class JvmManager {
 				try {
 					unzip(jvmArchive, bindir);
 				}catch(java.util.zip.ZipException ex) {
-					System.out.println("Failed the extract, erasing and re-downloading");
+					//System.out.println("Failed the extract, erasing and re-downloading");
 					jvmArchive.delete();
 					ex.printStackTrace();
 					return getCommandString(project,  repo,  version,  downloadJsonURL,
@@ -92,7 +92,7 @@ public class JvmManager {
 				untar(jvmArchive, bindir);
 			}
 		} else {
-			System.out.println("Not extraction, VM exists " + dest.getAbsolutePath());
+			//System.out.println("Not extraction, VM exists " + dest.getAbsolutePath());
 		}
 		String cmd = bindir + name + "/bin/java" + (LatestFromGithubLaunchUI.isWin() ? ".exe" : "") + " ";
 		for (String s : jvmargs) {
@@ -156,7 +156,7 @@ public class JvmManager {
 									String text = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
 											.lines().collect(Collectors.joining("\n"));
 									Path target = Paths.get(".", text);
-									System.out.println("Creating symlink " + entryPath + " with " + target);
+									//System.out.println("Creating symlink " + entryPath + " with " + target);
 
 									Files.createSymbolicLink(entryPath, target);
 									continue;
@@ -188,7 +188,7 @@ public class JvmManager {
 		// tarIn is a TarArchiveInputStream
 		while (tarEntry != null) {// create a file with the same name as the tarEntry
 			File destPath = new File(dest.toString() + System.getProperty("file.separator") + tarEntry.getName());
-			// System.out.println("working: " + destPath.getCanonicalPath());
+			// //System.out.println("working: " + destPath.getCanonicalPath());
 			if (tarEntry.isDirectory()) {
 				destPath.mkdirs();
 			} else {
@@ -226,7 +226,7 @@ public class JvmManager {
 			pis.addListener(new Listener() {
 				@Override
 				public void process(double percent) {
-					//System.out.println("Download percent " + percent);
+					////System.out.println("Download percent " + percent);
 					Platform.runLater(() -> {
 						progress.setProgress(percent);
 					});
@@ -234,7 +234,7 @@ public class JvmManager {
 			});
 
 			if (!folder.exists() || !exe.exists()) {
-				System.out.println("Start Downloading " + filename);
+				//System.out.println("Start Downloading " + filename);
 				folder.mkdirs();
 				exe.createNewFile();
 				byte dataBuffer[] = new byte[1024];
@@ -245,14 +245,14 @@ public class JvmManager {
 				}
 				fileOutputStream.close();
 				pis.close();
-				System.out.println("Finished downloading " + filename);
+				//System.out.println("Finished downloading " + filename);
 			} else {
-				System.out.println("Not downloadeing, it existst " + filename);
+				//System.out.println("Not downloadeing, it existst " + filename);
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		System.out.println("Using JVM "+exe.getAbsolutePath());
+		//System.out.println("Using JVM "+exe.getAbsolutePath());
 		return exe;
 	}
 }

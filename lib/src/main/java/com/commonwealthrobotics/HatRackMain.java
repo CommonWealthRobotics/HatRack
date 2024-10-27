@@ -3,12 +3,12 @@ package com.commonwealthrobotics;
 public class HatRackMain {
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
-		for(int i=0;i<args.length;i++) {
-			System.out.println("Arg "+i+" = "+args[i]);
-		}
-		System.out.println(System.getProperty("os.name"));
-		System.out.println(System.getProperty("os.arch"));
+//		com.neuronrobotics.sdk.common.Log.error("Hello World!");
+//		for(int i=0;i<args.length;i++) {
+//			com.neuronrobotics.sdk.common.Log.error("Arg "+i+" = "+args[i]);
+//		}
+//		com.neuronrobotics.sdk.common.Log.error(System.getProperty("os.name"));
+//		com.neuronrobotics.sdk.common.Log.error(System.getProperty("os.arch"));
 
 	}
 
