@@ -1,10 +1,8 @@
-#https://cdn.azul.com/zulu/bin/zulu17.50.19-ca-fx-jdk17.0.11-linux_x64.tar.gz
-#   zulu17.50.19-ca-fx-jdk17.0.11-linux_x64
+# https://cdn.azul.com/zulu/bin/zulu17.56.15-ca-fx-jdk17.0.14-linux_aarch64.tar.gz
+#   zulu17.56.15-ca-fx-jdk17.0.14-linux_aarch64.tar.gz
 NAME=BowlerLauncher
 VERSION=0.0.1
 MAIN=com.commonwealthrobotics.Main
-
-sudo apt install fuse 
 
 if [[ -z "${VERSION_SEMVER}" ]]; then
   VERSION=4.0.4
@@ -14,16 +12,8 @@ fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-export ARCH=x86_64
-JVM=zulu17.50.19-ca-fx-jdk17.0.11-linux_x64
-if [[ $(uname -m) == 'aarch64' ]]; then
-  ARCH=aarch64
-  echo "ARM linux detected https://cdn.azul.com/zulu/bin/zulu17.52.17-ca-fx-jdk17.0.12-linux_aarch64.tar.gz" 
-  JVM=zulu17.52.17-ca-fx-jdk17.0.12-linux_aarch64
-else
-  echo "x86 Linux detected https://cdn.azul.com/zulu/bin/zulu17.50.19-ca-fx-jdk17.0.11-linux_x64.tar.gz" 
-fi
-
+export ARCH=arm64
+JVM=zulu17.56.15-ca-fx-jdk17.0.14-linux_aarch64
 set -e
 ZIP=$JVM.tar.gz
 export JAVA_HOME=$HOME/bin/java17/
@@ -91,11 +81,11 @@ cp $ICON $NAME.AppDir/$NAME.png
 
 
 # Step 2: Install AppImageTool (done once)
-TOOL=appimagetool-x86_64.AppImage
+TOOL=appimagetool-aarch64.AppImage
 if test -f $TOOL; then
 	echo $TOOL exists
 else
-	wget https://github.com/AppImage/AppImageKit/releases/download/continuous/$TOOL
+	wget https://github.com/AppImage/appimagetool/releases/download/continuous/$TOOL
 	chmod +x $TOOL
 fi
 
@@ -121,7 +111,7 @@ ls -al
 rm -rf release
 mkdir release
 cp *.deb release/$NAME-Linux-$ARCH.deb
-cp $NAME-$ARCH.AppImage release/$NAME-Linux-$ARCH.AppImage
+cp $NAME-aarch64.AppImage release/$NAME-Linux-$ARCH.AppImage
 #sudo apt remove bowlerlauncher
 #sudo dpkg -i *.deb
 

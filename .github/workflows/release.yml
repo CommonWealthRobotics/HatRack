@@ -6,8 +6,22 @@ on:
          - '*'
 
 jobs:
+  linux-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      env:
+         VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
+      run: bash package-linux_arm46.sh
+    - name: Upload  result for job Linux
+      uses: actions/upload-artifact@v4
+      with:
+          name: linux-arm-lib
+          path: release/*
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout
       uses: actions/checkout@v1
@@ -15,8 +29,8 @@ jobs:
       env:
          VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-linux.sh
-    - name: Upload math result for job Linux
-      uses: actions/upload-artifact@v3
+    - name: Upload  result for job Linux
+      uses: actions/upload-artifact@v4
       with:
           name: linux-lib
           path: release/*
@@ -33,8 +47,8 @@ jobs:
       env:
          VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-windows_x86_64.sh
-    - name: Upload math result for job Windows
-      uses: actions/upload-artifact@v3
+    - name: Upload  result for job Windows
+      uses: actions/upload-artifact@v4
       with:
           name: win-lib
           path: release/*
@@ -47,8 +61,8 @@ jobs:
       env:
          VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-macos.sh
-    - name: Upload math result for job Mac
-      uses: actions/upload-artifact@v3
+    - name: Upload  result for job Mac
+      uses: actions/upload-artifact@v4
       with:
           name: mac-lib-arm
           path: release/*
@@ -61,14 +75,14 @@ jobs:
       env:
          VERSION_SEMVER: ${{ steps.vars.outputs.tag }}
       run: bash package-macos.sh
-    - name: Upload math result for job Mac
-      uses: actions/upload-artifact@v3
+    - name: Upload  result for job Mac
+      uses: actions/upload-artifact@v4
       with:
           name: mac-lib-x86
           path: release/*
   publish:
     runs-on: ubuntu-latest 
-    needs: [macos,windows,linux,macos-arm]
+    needs: [macos,windows,linux,macos-arm,linux-arm]
     permissions: 
       contents: write
       packages: write 
@@ -83,23 +97,28 @@ jobs:
         run: |
           echo $VERSION_SEMVER
           echo ${{ steps.vars.outputs.tag }}
-      - name: Download math result for job Windows
-        uses: actions/download-artifact@v3
+      - name: Download  result for job Windows
+        uses: actions/download-artifact@v4
         with:
           name: win-lib 
           path: .
-      - name: Download math result for job Linux
-        uses: actions/download-artifact@v3
+      - name: Download  result for job Linux ARM
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-arm-lib 
+          path: .
+      - name: Download  result for job Linux
+        uses: actions/download-artifact@v4
         with:
           name: linux-lib 
           path: .
-      - name: Download math result for job Mac-arm
-        uses: actions/download-artifact@v3
+      - name: Download  result for job Mac-arm
+        uses: actions/download-artifact@v4
         with:
           name: mac-lib-arm
           path: .
-      - name: Download math result for job Mac-x86
-        uses: actions/download-artifact@v3
+      - name: Download  result for job Mac-x86
+        uses: actions/download-artifact@v4
         with:
           name: mac-lib-x86
           path: .
@@ -107,69 +126,19 @@ jobs:
         run: |
           echo "Downloads:"
           ls -als
-             
-      - name: Make gitHub release
-        uses: actions/create-release@v1
-        id: create_release
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-               draft: false
-               prerelease: false
-               release_name: ${{ steps.version.outputs.version }}
-               tag_name: ${{ github.ref }}
+          files: |
+             BowlerLauncher-Linux-arm64.AppImage
+             BowlerLauncher-Linux-arm64.deb
+             BowlerLauncher-Linux-x86_64.AppImage
+             BowlerLauncher-Linux-x86_64.deb
+             BowlerLauncher-Windows-x86_64.exe
+             BowlerLauncher-Windows-x86_64.zip
+             BowlerLauncher-MacOS-x86_64.dmg
+             BowlerLauncher-MacOS-arm64.dmg
         env:
-               GITHUB_TOKEN: ${{ github.token }}
-
-      - name: upload Linux AppImage 
-        uses: actions/upload-release-asset@v1
-        env:
-               GITHUB_TOKEN: ${{ github.token }}
-        with:
-               upload_url: ${{ steps.create_release.outputs.upload_url }}
-               asset_path: BowlerLauncher-Linux-x86_64.AppImage
-               asset_name: BowlerLauncher-Linux-x86_64.AppImage
-               asset_content_type: application/octet-stream
-      - name: upload Debian 
-        uses: actions/upload-release-asset@v1
-        env:
-               GITHUB_TOKEN: ${{ github.token }}
-        with:
-               upload_url: ${{ steps.create_release.outputs.upload_url }}
-               asset_path: BowlerLauncher-Linux-x86_64.deb
-               asset_name: BowlerLauncher-Linux-x86_64.deb
-               asset_content_type: application/octet-stream                 
-      - name: upload Windows exe
-        uses: actions/upload-release-asset@v1
-        env:
-               GITHUB_TOKEN: ${{ github.token }}
-        with:
-               upload_url: ${{ steps.create_release.outputs.upload_url }}
-               asset_path: BowlerLauncher-Windows-x86_64.exe
-               asset_name: BowlerLauncher-Windows-x86_64.exe
-               asset_content_type: application/exe        
-      - name: upload Windows zip
-        uses: actions/upload-release-asset@v1
-        env:
-               GITHUB_TOKEN: ${{ github.token }}
-        with:
-               upload_url: ${{ steps.create_release.outputs.upload_url }}
-               asset_path: BowlerLauncher-Windows-x86_64.zip
-               asset_name: BowlerLauncher-Windows-x86_64.zip
-               asset_content_type: application/zip        
-      - name: upload MacOS dmg x86
-        uses: actions/upload-release-asset@v1
-        env:
-               GITHUB_TOKEN: ${{ github.token }}
-        with:
-               upload_url: ${{ steps.create_release.outputs.upload_url }}
-               asset_path: BowlerLauncher-MacOS-x86_64.dmg
-               asset_name: BowlerLauncher-MacOS-x86_64.dmg
-               asset_content_type: application/octet-stream 
-      - name: upload MacOS dmg arm
-        uses: actions/upload-release-asset@v1
-        env:
-               GITHUB_TOKEN: ${{ github.token }}
-        with:
-               upload_url: ${{ steps.create_release.outputs.upload_url }}
-               asset_path: BowlerLauncher-MacOS-arm64.dmg
-               asset_name: BowlerLauncher-MacOS-arm64.dmg
-               asset_content_type: application/octet-stream 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}             
+  
